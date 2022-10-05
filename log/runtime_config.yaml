@@ -1,0 +1,13 @@
+batch_size: 32
+finetuning: false
+logdir: checkpoints/target_predict
+lr: 0.001
+model_name: bert-base-uncased
+n_epochs: 30
+patience: 5
+seed: 2022
+top_rnns: false
+train_type: PLM-BiLSTM-CRF
+trainset: data/train_bmes.txt
+validset: data/valid_bmes.txt
+work_dir: log
