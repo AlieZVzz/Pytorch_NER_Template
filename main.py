@@ -203,6 +203,7 @@ def main():
     parser.add_argument("--finetuning", dest="finetuning", action="store_true")
     parser.add_argument("--top_rnns", dest="top_rnns", action="store_true")
     parser.add_argument("--logdir", type=str, default="checkpoints/target_predict")
+    parser.add_argument("--modeldir", type=str, default="checkpoints")
     parser.add_argument("--trainset", type=str, default="data/train_bmes.txt")
     parser.add_argument("--validset", type=str, default="data/valid_bmes.txt")
     parser.add_argument("--train_type", type=str, default='PLM-BiLSTM-CRF')  # bert_bilstm_crf bilstm_crf bert_crf
@@ -243,6 +244,7 @@ def main():
             self.early_stop = False
             self.val_f1_min = np.Inf
             self.delta = delta
+            self.filename = None
 
         def __call__(self, val_f1, model):
 
@@ -267,9 +269,12 @@ def main():
                 logger.info(f'Validation f1 increased ({self.val_f1_min:.6f} --> {val_f1:.6f}).  Saving model ...')
 
             # torch.save(model.state_dict(), 'checkpoint.pt')	# 这里会存储迄今最优模型的参数
-            torch.save(model,
-                       'checkpoints/' + str(opt.model_name) + '_' + str(opt.train_type) + '_' +
-                       strftime("%y%m%d-%H%M", localtime()) + '_params.pth')
+            if self.filename is not None:
+                os.remove(self.filename)
+
+            self.filename = os.path.join(opt.modeldir, opt.model_name + '_' + opt.train_type + '_' + str(val_f1) + '_params.pth')
+            torch.save(model, self.filename)
+
             self.val_f1_min = val_f1
 
     opt.early_stopping = EarlyStopping(opt.patience, verbose=True)

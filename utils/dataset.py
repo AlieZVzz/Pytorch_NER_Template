@@ -1,7 +1,9 @@
 from torch.utils.data import Dataset
 
 TAGS = ['Location']
-VOCAB = ('<PAD>', '[CLS]', '[SEP]', 'O', 'B-Location', 'M-Location', 'E-Location', 'S-Location')
+VOCAB = ['<PAD>', '[CLS]', '[SEP]', 'O']
+for tag in TAGS:
+    VOCAB.extend(['B-' + tag, 'M-' + tag, 'E-' + tag, 'S-' + tag])
 tag2idx = {tag: idx for idx, tag in enumerate(VOCAB)}
 idx2tag = {idx: tag for idx, tag in enumerate(VOCAB)}
 MAX_LEN = 256 - 2
