@@ -220,9 +220,9 @@ def main():
         np.random.seed(opt.seed)
         torch.manual_seed(opt.seed)
         torch.cuda.manual_seed(opt.seed)
-        # torch.backends.cudnn.deterministic = True
-        # torch.backends.cudnn.benchmark = False
-        # os.environ['PYTHONHASHSEED'] = str(opt.seed)
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+        os.environ['PYTHONHASHSEED'] = str(opt.seed)
 
     class EarlyStopping:
         """Early stops the training if validation loss doesn't improve after a given patience."""
@@ -272,7 +272,8 @@ def main():
             if self.filename is not None:
                 os.remove(self.filename)
 
-            self.filename = os.path.join(opt.modeldir, opt.model_name + '_' + opt.train_type + '_' + str(val_f1) + '_params.pth')
+            self.filename = os.path.join(opt.modeldir,
+                                         opt.model_name + '_' + opt.train_type + '_' + str(val_f1) + '_params.pth')
             torch.save(model, self.filename)
 
             self.val_f1_min = val_f1
